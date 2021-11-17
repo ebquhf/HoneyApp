@@ -9,11 +9,13 @@ public class Stand {
     public String name;
     public LatLng location;
     public boolean hasHoney;
+    public String description;
     private static List<Stand> testList;
-    public Stand(String name,double latitude,double longitude,boolean honey){
+    public Stand(String name,double latitude,double longitude,boolean honey,String description){
         this.name=name;
         this.location = new LatLng(latitude,longitude);
         this.hasHoney = honey;
+        this.description = description;
     }
      public static List<Stand> getStands(){
          if (testList !=null && testList.size() > 0){
@@ -21,12 +23,27 @@ public class Stand {
          }
          else{
              testList  = new ArrayList<Stand>();
-             testList.add(new Stand("first",55.399083881325396, 10.379019283535353,true));
-             testList.add(new Stand("second",55.39470926481129, 10.368440650865,true));
-             testList.add(new Stand("third",55.397975041049406, 10.381272339175085,true));
-             testList.add(new Stand("fourth",55.39385621911716, 10.376616024186307,true));
-             testList.add(new Stand("fifth",55.39479456836836, 10.371702217124419,true));
+             testList.add(new Stand("Søren K. Rasmussen",55.422460196625394, 10.449149695897693,true,"Best organic honey in Odense!"));
+             testList.add(new Stand("Peter Ingemann",55.42008547764949, 10.446928826842152,false,"Sweet as honey, Honey"));
+             testList.add(new Stand("Morten Messerfedt",55.42235059735412, 10.444096414133636,true,"Just buy it ma'am it's honey!"));
              return testList;
          }
      }
+     public static Stand getStandByLocation(LatLng location){
+         if (testList !=null && testList.size() > 0){
+             return testList.stream().filter((s)->s.location==location).findFirst().orElse(null);
+         }
+         else{
+            return null;
+         }
+     }
+
+    public static Stand getStandByName(String s) {
+        if (testList !=null && testList.size() > 0){
+            return testList.stream().filter((f)->f.name==s).findFirst().orElse(null);
+        }
+        else{
+            return null;
+        }
+    }
 }

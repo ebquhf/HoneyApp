@@ -21,6 +21,8 @@ import java.util.Map;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static final String EXTRA_MESSAGE = "com.example.honeyapp.TEST";
+    public static final String CHECKED_MESSAGE = "hasHoney";
+    public static final String DESC_MESSAGE = "desc";
 
     private GoogleMap mMap;
 
@@ -49,35 +51,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Map<LatLng, String> positions = new HashMap<>();
 
         mMap = googleMap;
+        LatLng odense = new LatLng(55.42206633810837, 10.447166699880208);
 
-        // Add a marker in Sydney and move the camera
-        LatLng odense = new LatLng(55.40, 10.38);
-       // mMap.addMarker(new MarkerOptions().position(odense).title("Marker in Sydney"));
-        Stand.getStands().forEach((a)->{mMap.addMarker(new MarkerOptions().position(a.location).title(a.name));});
+        Stand.getStands().forEach((a)->{
+            mMap.addMarker(new MarkerOptions().position(a.location).title(a.name));
+            positions.put(a.location,a.name);
+        });
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(odense,15));
 
-        LatLng sydney = new LatLng(55.42206633810837, 10.447166699880208);
-
-        LatLng stand1 = new LatLng(55.422460196625394, 10.449149695897693);
-        positions.put(stand1, "Søren K. Rasmussen");
-        mMap.addMarker(new MarkerOptions().position(stand1).title("Beekeeper 1"));
-        LatLng stand2 = new LatLng(55.42008547764949, 10.446928826842152);
-        positions.put(stand2, "Peter Ingemann");
-        mMap.addMarker(new MarkerOptions().position(stand2).title("Beekeeper 2"));
-        LatLng stand3 = new LatLng(55.42235059735412, 10.444096414133636);
-        positions.put(stand3, "Morten Messerfedt");
-        mMap.addMarker(new MarkerOptions().position(stand3).title("Beekeeper 3"));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(odense));
         mMap.setOnMarkerClickListener(marker -> {
             // Send marker coordinates to server, receive json for name, bio and pic
-            String name = positions.get(marker.getPosition());
+            Stand actual = Stand.getStandByName(positions.get(marker.getPosition()));
+
+            String name = actual.name;
             Intent intent = new Intent(this, BeekeeperActivity.class);
             intent.putExtra(EXTRA_MESSAGE, name);
+            intent.putExtra(CHECKED_MESSAGE, actual.hasHoney);
+            intent.putExtra(DESC_MESSAGE,actual.description);
+
             startActivity(intent);
-            /*setContentView(R.layout.activity_beekeeper);
-            TextView name_view = (TextView) findViewById(R.id.beekeeperName);
-            name_view.setText(name);*/
             return true;
         });
 
