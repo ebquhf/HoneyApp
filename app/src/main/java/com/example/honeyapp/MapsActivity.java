@@ -37,9 +37,10 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    public static final String EXTRA_MESSAGE = "com.example.honeyapp.TEST";
+    public static final String NAME = "name";
     public static final String CHECKED_MESSAGE = "hasHoney";
     public static final String DESC_MESSAGE = "desc";
+    public static final String LINK = "url";
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private GoogleMap mMap;
@@ -89,9 +90,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             String name = actual.name;
             Intent intent = new Intent(this, BeekeeperActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, name);
+            intent.putExtra(NAME, name);
             intent.putExtra(CHECKED_MESSAGE, actual.hasHoney);
             intent.putExtra(DESC_MESSAGE, actual.description);
+            intent.putExtra(DESC_MESSAGE,actual.description);
+            intent.putExtra(LINK, actual.url);
 
             startActivity(intent);
             return true;
