@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String DESC_MESSAGE = "desc";
     public static final String LINK = "url";
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
+    private boolean isFirstRun =true;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastLocation;
@@ -122,15 +124,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mLastLocation = location;
 
                     //Place current location marker
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.title("Current Position");
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                  //  mCurrLocationMarker = googleMap.addMarker(markerOptions);
+                    if (isFirstRun){
+                        isFirstRun = false;
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng);
+                        markerOptions.title("Current Position");
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                      //  mCurrLocationMarker = googleMap.addMarker(markerOptions);
 
-                    //move map camera
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, getZoomLevel()));
+                        //move map camera
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, getZoomLevel(googleMap)));
+                 }
                 }
             }
         };
@@ -153,7 +158,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private float getZoomLevel() {
+    private float getZoomLevel(GoogleMap googleMap) {
+        List<LatLng> locations = new ArrayList<>();
+        float maxDist = -1;
+        Stand.getStands().forEach(s->locations.add(s.location));
+        for (int i = 0; i < locations.size()-1; i++) {
+            Location temp1 = new Location(LocationManager.GPS_PROVIDER);
+            Location temp2 = new Location(LocationManager.GPS_PROVIDER);
+            temp1.setLatitude(locations.get(i).latitude);
+            temp1.setLongitude(locations.get(i).longitude);
+            temp2.setLatitude(locations.get(i).latitude);
+            temp2.setLongitude(locations.get(i).longitude);
+            float distance = temp1.distanceTo(temp2);
+           if(distance>maxDist){
+               maxDist = distance;
+           }
+        }
+
         return 15;
     }
 
