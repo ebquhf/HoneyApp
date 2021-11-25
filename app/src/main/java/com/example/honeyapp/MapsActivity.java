@@ -160,22 +160,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private float getZoomLevel(GoogleMap googleMap) {
         List<LatLng> locations = new ArrayList<>();
+        float maxZoomLevel = googleMap.getMaxZoomLevel();
         float maxDist = -1;
+        float distance = 0;
         Stand.getStands().forEach(s->locations.add(s.location));
         for (int i = 0; i < locations.size()-1; i++) {
             Location temp1 = new Location(LocationManager.GPS_PROVIDER);
             Location temp2 = new Location(LocationManager.GPS_PROVIDER);
             temp1.setLatitude(locations.get(i).latitude);
             temp1.setLongitude(locations.get(i).longitude);
-            temp2.setLatitude(locations.get(i).latitude);
-            temp2.setLongitude(locations.get(i).longitude);
-            float distance = temp1.distanceTo(temp2);
+            temp2.setLatitude(locations.get(i+1).latitude);
+            temp2.setLongitude(locations.get(i+1).longitude);
+             distance = temp1.distanceTo(temp2);
            if(distance>maxDist){
                maxDist = distance;
            }
         }
 
-        return 15;
+        double  res = Math.log(1080 / (distance * 1920));
+        float asd = (float) Math.floor( maxZoomLevel+res);
+        return asd;
     }
 
     private void checkLocationPermission() {
