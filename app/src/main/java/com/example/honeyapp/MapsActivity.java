@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -76,13 +77,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Map<LatLng, String> positions = new HashMap<>();
 
         mMap = googleMap;
-        LatLng odense = new LatLng(55.42206633810837, 10.447166699880208);
 
         Stand.getStands().forEach((a) -> {
             mMap.addMarker(new MarkerOptions().position(a.location).title(a.name));
             positions.put(a.location, a.name);
         });
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(odense, 15));
+
+        Zoom zoom = Zoom.getInstance();
+        Log.d("onMapReady", "Initial zoom level: " + zoom.zoomLevel);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoom.position, zoom.zoomLevel));
+
+        mMap.setOnCameraIdleListener(() -> {
+            float zoomLevel = mMap.getCameraPosition().zoom;
+            LatLng new_pos = mMap.getCameraPosition().target;
+            if (zoomLevel != zoom.zoomLevel){
+                Log.d("onCameraChange", "Before value is " + zoom.zoomLevel);
+                zoom.zoomLevel = zoomLevel;  // here you get zoom level
+                Log.d("onCameraChange", "New value is " + zoom.zoomLevel);
+            }
+
+            if (new_pos != zoom.position){
+                zoom.position = new_pos;  // here you get zoom level
+            }
+        });
+
+/*        mMap.setOnCameraChangeListener(position -> {
+            if (position.zoom != zoom.zoomLevel){
+                Log.d("onCameraChange", String.valueOf(position.zoom));
+                zoom.zoomLevel = position.zoom;  // here you get zoom level
+                Log.d("onCameraChange", "zoom level is " + position.zoom);
+            }
+        });*/
 
         //mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(odense));
@@ -134,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                       //  mCurrLocationMarker = googleMap.addMarker(markerOptions);
 
                         //move map camera
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, getZoomLevel(googleMap)));
+                        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, getZoomLevel(googleMap)));
                  }
                 }
             }
