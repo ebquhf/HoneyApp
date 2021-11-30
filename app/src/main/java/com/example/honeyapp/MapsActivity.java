@@ -86,7 +86,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Zoom zoom = Zoom.getInstance(getZoomLevel(mMap));
         Log.d("onMapReady", "Initial zoom level: " + zoom.zoomLevel);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoom.position, zoom.zoomLevel));
 
         mMap.setOnCameraIdleListener(() -> {
             float zoomLevel = mMap.getCameraPosition().zoom;
@@ -158,9 +157,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         markerOptions.title("Current Position");
                         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                       //  mCurrLocationMarker = googleMap.addMarker(markerOptions);
-
+                        Zoom zoom = Zoom.getInstance(getZoomLevel(mMap));
                         //move map camera
-                        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, getZoomLevel(googleMap)));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom.zoomLevel));
                  }
                 }
             }
