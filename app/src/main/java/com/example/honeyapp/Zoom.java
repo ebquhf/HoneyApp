@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Zoom extends Application {
     public float zoomLevel;
-    public LatLng position = new LatLng(55.42206633810837, 10.447166699880208);
+    public LatLng position;
 
     // Getter/setter
 
@@ -15,6 +15,7 @@ public class Zoom extends Application {
 
     protected Zoom(float zoomLevel){
         this.zoomLevel = zoomLevel;
+        this.position = new LatLng(55.42206633810837, 10.447166699880208);
     }
 
     public static synchronized Zoom getInstance(float zoomLevel) {

@@ -159,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                       //  mCurrLocationMarker = googleMap.addMarker(markerOptions);
                         Zoom zoom = Zoom.getInstance(getZoomLevel(mMap));
                         //move map camera
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom.zoomLevel));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoom.position,zoom.zoomLevel));
                  }
                 }
             }
