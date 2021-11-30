@@ -45,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String DESC_MESSAGE = "desc";
     public static final String LINK = "url";
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private boolean isFirstRun =true;
+    private boolean isFirstRun;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastLocation;
@@ -55,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        this.isFirstRun = true;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -83,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             positions.put(a.location, a.name);
         });
 
-        Zoom zoom = Zoom.getInstance();
+        Zoom zoom = Zoom.getInstance(getZoomLevel(mMap));
         Log.d("onMapReady", "Initial zoom level: " + zoom.zoomLevel);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoom.position, zoom.zoomLevel));
 
